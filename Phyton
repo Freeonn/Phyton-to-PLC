@@ -1,0 +1,50 @@
+# Importing standard libraries
+import threading
+import socket
+import sys
+
+
+# Sending data function
+def SendMessage():
+    while True:
+        # Saving the message from the user
+        temp = input()
+        # Adapting the message to 16 bytes by filling the end of the string by blank spaces
+        mess = temp + (32 - len(temp)) * ' '
+        # Sending the message in the client's socket
+        client_socket.send(mess.encode())
+        print(f"[{mess}] message sent\n")
+
+
+# Receiving data function
+def ReceiveMessage():
+    while True:
+        # Reading 16 bytes (characters) from the client's socket. If there's no incoming message, we skip to the next iteration
+        mess = client_socket.recv(32).decode()
+        if not mess:
+            sys.exit(0)
+        print(f"Received message: {mess}\n")
+
+
+# Main program
+if __name__ == "__main__":
+    # Defining the server's IP address and port
+    #SERVERIP = '192.168.0.10'
+    SERVERIP = 'localhost'
+    PORT = 2000
+    # Initializing the TCP server socket over IPv4 (AF_INT)
+    Server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    # Binding the IP address to the port
+    Server.bind((SERVERIP, PORT))
+    # Starting to listen in the server socket
+    Server.listen(1)
+    print(f'Server is listening on {SERVERIP} : {PORT}')
+    # Accepting incoming connection
+    client_socket, Addr = Server.accept()
+    print(f"{Addr} is connected. Type a message and press enter to send it.\n")
+    # Defining a thread for each function
+    ReceiveThread = threading.Thread(target=ReceiveMessage)
+    SendThread = threading.Thread(target=SendMessage)
+    # Starting the threads
+    SendThread.start()
+    ReceiveThread.start()
