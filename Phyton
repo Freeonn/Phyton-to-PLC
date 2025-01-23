@@ -9,7 +9,7 @@ def SendMessage():
     while True:
         # Saving the message from the user
         temp = input()
-        # Adapting the message to 16 bytes by filling the end of the string by blank spaces
+        # Adapting the message to 32 bytes by filling the end of the string by blank spaces
         mess = temp + (32 - len(temp)) * ' '
         # Sending the message in the client's socket
         client_socket.send(mess.encode())
@@ -29,7 +29,6 @@ def ReceiveMessage():
 # Main program
 if __name__ == "__main__":
     # Defining the server's IP address and port
-    #SERVERIP = '192.168.0.10'
     SERVERIP = 'localhost'
     PORT = 2000
     # Initializing the TCP server socket over IPv4 (AF_INT)
